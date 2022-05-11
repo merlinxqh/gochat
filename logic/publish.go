@@ -39,10 +39,15 @@ func (logic *Logic) InitPublishRedisClient() (err error) {
 	return err
 }
 
-func (logic *Logic) InitRpcServer() (err error) {
+func (logic *Logic) InitRpcServer(starter proto.Starter) (err error) {
 	var network, addr string
 	// a host multi port case
-	rpcAddressList := strings.Split(config.Conf.Logic.LogicBase.RpcAddress, ",")
+	rpcAddr := config.Conf.Logic.LogicBase.RpcAddress
+	if starter.RpcHosts != "" {
+		rpcAddr = starter.RpcHosts
+	}
+	logrus.Infof("start logic-server hosts: %s", rpcAddr)
+	rpcAddressList := strings.Split(rpcAddr, ",")
 	for _, bind := range rpcAddressList {
 		if network, addr, err = tools.ParseNetwork(bind); err != nil {
 			logrus.Panicf("InitLogicRpc ParseNetwork error : %s", err.Error())

@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"gochat/config"
+	"gochat/proto"
 	_ "net/http/pprof"
 	"runtime"
 	"time"
@@ -25,7 +26,7 @@ func New() *Connect {
 	return new(Connect)
 }
 
-func (c *Connect) Run() {
+func (c *Connect) Run(starter proto.Starter) {
 	// get Connect layer config
 	connectConfig := config.Conf.Connect
 
@@ -58,17 +59,17 @@ func (c *Connect) Run() {
 	})
 	c.ServerId = fmt.Sprintf("%s-%s", "ws", uuid.New().String())
 	//init Connect layer rpc server ,task layer will call this
-	if err := c.InitConnectWebsocketRpcServer(); err != nil {
+	if err := c.InitConnectWebsocketRpcServer(starter); err != nil {
 		logrus.Panicf("InitConnectWebsocketRpcServer Fatal error: %s \n", err.Error())
 	}
 
 	//start Connect layer server handler persistent connection
-	if err := c.InitWebsocket(); err != nil {
+	if err := c.InitWebsocket(starter); err != nil {
 		logrus.Panicf("Connect layer InitWebsocket() error:  %s \n", err.Error())
 	}
 }
 
-func (c *Connect) RunTcp() {
+func (c *Connect) RunTcp(starter proto.Starter) {
 	// get Connect layer config
 	connectConfig := config.Conf.Connect
 
@@ -104,11 +105,11 @@ func (c *Connect) RunTcp() {
 	//}()
 	c.ServerId = fmt.Sprintf("%s-%s", "tcp", uuid.New().String())
 	//init Connect layer rpc server ,task layer will call this
-	if err := c.InitConnectTcpRpcServer(); err != nil {
+	if err := c.InitConnectTcpRpcServer(starter); err != nil {
 		logrus.Panicf("InitConnectWebsocketRpcServer Fatal error: %s \n", err.Error())
 	}
 	//start Connect layer server handler persistent connection by tcp
-	if err := c.InitTcpServer(); err != nil {
+	if err := c.InitTcpServer(starter); err != nil {
 		logrus.Panicf("Connect layerInitTcpServer() error:%s\n ", err.Error())
 	}
 }

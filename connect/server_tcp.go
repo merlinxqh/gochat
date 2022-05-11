@@ -25,8 +25,12 @@ func init() {
 	rpc.InitLogicRpcClient()
 }
 
-func (c *Connect) InitTcpServer() error {
-	aTcpAddr := strings.Split(config.Conf.Connect.ConnectTcp.Bind, ",")
+func (c *Connect) InitTcpServer(starter proto.Starter) error {
+	bind := config.Conf.Connect.ConnectTcp.Bind
+	if starter.TcpBindHosts != "" {
+		bind = starter.TcpBindHosts
+	}
+	aTcpAddr := strings.Split(bind, ",")
 	cpuNum := config.Conf.Connect.ConnectBucket.CpuNum
 	var (
 		addr     *net.TCPAddr

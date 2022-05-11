@@ -14,6 +14,7 @@ import (
 	"gochat/api/router"
 	"gochat/api/rpc"
 	"gochat/config"
+	"gochat/proto"
 	"net/http"
 	"os"
 	"os/signal"
@@ -29,7 +30,7 @@ func New() *Chat {
 }
 
 //api server,Also, you can use gin,echo ... framework wrap
-func (c *Chat) Run() {
+func (c *Chat) Run(starter proto.Starter) {
 	//init rpc client
 	rpc.InitLogicRpcClient()
 
@@ -39,6 +40,9 @@ func (c *Chat) Run() {
 	gin.SetMode(runMode)
 	apiConfig := config.Conf.Api
 	port := apiConfig.ApiBase.ListenPort
+	if starter.Port != 0 {
+		port = starter.Port
+	}
 	flag.Parse()
 
 	srv := &http.Server{

@@ -8,6 +8,7 @@ package task
 import (
 	"github.com/sirupsen/logrus"
 	"gochat/config"
+	"gochat/proto"
 	"runtime"
 )
 
@@ -18,7 +19,7 @@ func New() *Task {
 	return new(Task)
 }
 
-func (task *Task) Run() {
+func (task *Task) Run(starter proto.Starter) {
 	//read config
 	taskConfig := config.Conf.Task
 	runtime.GOMAXPROCS(taskConfig.TaskBase.CpuNum)

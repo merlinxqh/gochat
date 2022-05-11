@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"gochat/config"
+	"gochat/proto"
 	"net/http"
 )
 
@@ -19,9 +20,12 @@ func New() *Site {
 	return &Site{}
 }
 
-func (s *Site) Run() {
+func (s *Site) Run(starter proto.Starter) {
 	siteConfig := config.Conf.Site
 	port := siteConfig.SiteBase.ListenPort
+	if starter.Port != 0 {
+		port = starter.Port
+	}
 	addr := fmt.Sprintf(":%d", port)
 	logrus.Fatal(http.ListenAndServe(addr, http.FileServer(http.Dir("./site/"))))
 }

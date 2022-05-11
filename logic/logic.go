@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"gochat/config"
+	"gochat/proto"
 	"runtime"
 )
 
@@ -21,11 +22,11 @@ func New() *Logic {
 	return new(Logic)
 }
 
-func (logic *Logic) Run() {
+func (logic *Logic) Run(starter proto.Starter) {
 	//read config
 	logicConfig := config.Conf.Logic
 
-	runtime.GOMAXPROCS(logicConfig.LogicBase.CpuNum)
+	runtime.GOMAXPROCS(logicConfig.LogicBase.CpuNum) //设置当前程序并发占用cpu数
 	logic.ServerId = fmt.Sprintf("logic-%s", uuid.New().String())
 	//init publish redis
 	if err := logic.InitPublishRedisClient(); err != nil {
@@ -33,7 +34,7 @@ func (logic *Logic) Run() {
 	}
 
 	//init rpc server
-	if err := logic.InitRpcServer(); err != nil {
+	if err := logic.InitRpcServer(starter); err != nil {
 		logrus.Panicf("logic init rpc server fail")
 	}
 }

@@ -9,14 +9,19 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 	"gochat/config"
+	"gochat/proto"
 	"net/http"
 )
 
-func (c *Connect) InitWebsocket() error {
+func (c *Connect) InitWebsocket(starter proto.Starter) error {
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		c.serveWs(DefaultServer, w, r)
 	})
-	err := http.ListenAndServe(config.Conf.Connect.ConnectWebsocket.Bind, nil)
+	bind := config.Conf.Connect.ConnectWebsocket.Bind
+	if starter.WsBindHosts != "" {
+		bind = starter.WsBindHosts
+	}
+	err := http.ListenAndServe(bind, nil)
 	return err
 }
 

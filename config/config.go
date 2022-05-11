@@ -135,6 +135,16 @@ type CommonEtcd struct {
 	ConnectionTimeout int    `mapstructure:"connectionTimeout"`
 }
 
+type CommonMySQL struct {
+	Host               string `mapstructure:"host"`
+	Username           string `mapstructure:"username"`
+	Password           string `mapstructure:"password"`
+	Timeout            string `mapstructure:"timeout"`
+	MaxConnections     int    `mapstructure:"maxConnections"`
+	MaxIdleConnections int    `mapstructure:"maxIdleConnections"`
+	Dbname             string `mapstructure:"dbname"`
+}
+
 type CommonRedis struct {
 	RedisAddress  string `mapstructure:"redisAddress"`
 	RedisPassword string `mapstructure:"redisPassword"`
@@ -144,6 +154,7 @@ type CommonRedis struct {
 type Common struct {
 	CommonEtcd  CommonEtcd  `mapstructure:"common-etcd"`
 	CommonRedis CommonRedis `mapstructure:"common-redis"`
+	CommonMySQL CommonMySQL `mapstructure:"common-mysql"`
 }
 
 type ConnectBase struct {

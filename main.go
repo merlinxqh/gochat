@@ -11,6 +11,7 @@ import (
 	"gochat/api"
 	"gochat/connect"
 	"gochat/logic"
+	"gochat/proto"
 	"gochat/site"
 	"gochat/task"
 	"os"
@@ -18,24 +19,36 @@ import (
 	"syscall"
 )
 
+var (
+	module   = flag.String("module", "", "assign run module")
+	port     = flag.Int("p", 0, "start web server port, eg: \n8080")
+	rpcHosts = flag.String("rh", "", "register rpc server hosts, eg: \ntcp@127.0.0.1:6900,tcp@127.0.0.1:6901")
+	wsHosts  = flag.String("wb", "", "start websocket server bind hosts, eg: \n0.0.0.0:7000")
+	tcpHosts = flag.String("tb", "", "start tcp server bind hosts, eg: \n0.0.0.0:7001,0.0.0.0:7002")
+)
+
 func main() {
-	var module string
-	flag.StringVar(&module, "module", "", "assign run module")
 	flag.Parse()
-	fmt.Println(fmt.Sprintf("start run %s module", module))
-	switch module {
+	starter := proto.Starter{
+		Port:         *port,
+		RpcHosts:     *rpcHosts,
+		WsBindHosts:  *wsHosts,
+		TcpBindHosts: *tcpHosts,
+	}
+	fmt.Println(fmt.Sprintf("start run %s module", *module))
+	switch *module {
 	case "logic":
-		logic.New().Run()
+		logic.New().Run(starter)
 	case "connect_websocket":
-		connect.New().Run()
+		connect.New().Run(starter)
 	case "connect_tcp":
-		connect.New().RunTcp()
+		connect.New().RunTcp(starter)
 	case "task":
-		task.New().Run()
+		task.New().Run(starter)
 	case "api":
-		api.New().Run()
+		api.New().Run(starter)
 	case "site":
-		site.New().Run()
+		site.New().Run(starter)
 	default:
 		fmt.Println("exiting,module param error!")
 		return

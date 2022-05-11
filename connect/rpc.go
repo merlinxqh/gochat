@@ -78,22 +78,30 @@ func (rpc *RpcConnect) DisConnect(disConnReq *proto.DisConnectRequest) (err erro
 	return
 }
 
-func (c *Connect) InitConnectWebsocketRpcServer() (err error) {
+func (c *Connect) InitConnectWebsocketRpcServer(starter proto.Starter) (err error) {
 	var network, addr string
-	connectRpcAddress := strings.Split(config.Conf.Connect.ConnectRpcAddressWebSockts.Address, ",")
+	address := config.Conf.Connect.ConnectRpcAddressWebSockts.Address
+	if starter.RpcHosts != "" {
+		address = starter.RpcHosts
+	}
+	connectRpcAddress := strings.Split(address, ",")
 	for _, bind := range connectRpcAddress {
 		if network, addr, err = tools.ParseNetwork(bind); err != nil {
 			logrus.Panicf("InitConnectWebsocketRpcServer ParseNetwork error : %s", err)
 		}
 		logrus.Infof("Connect start run at-->%s:%s", network, addr)
-		go c.createConnectWebsocktsRpcServer(network, addr)
+		go c.createConnectWebsocketsRpcServer(network, addr)
 	}
 	return
 }
 
-func (c *Connect) InitConnectTcpRpcServer() (err error) {
+func (c *Connect) InitConnectTcpRpcServer(starter proto.Starter) (err error) {
 	var network, addr string
-	connectRpcAddress := strings.Split(config.Conf.Connect.ConnectRpcAddressTcp.Address, ",")
+	address := config.Conf.Connect.ConnectRpcAddressTcp.Address
+	if starter.RpcHosts != "" {
+		address = starter.RpcHosts
+	}
+	connectRpcAddress := strings.Split(address, ",")
 	for _, bind := range connectRpcAddress {
 		if network, addr, err = tools.ParseNetwork(bind); err != nil {
 			logrus.Panicf("InitConnectTcpRpcServer ParseNetwork error : %s", err)
@@ -159,7 +167,7 @@ func (rpc *RpcConnectPush) PushRoomInfo(ctx context.Context, pushRoomMsgReq *pro
 	return
 }
 
-func (c *Connect) createConnectWebsocktsRpcServer(network string, addr string) {
+func (c *Connect) createConnectWebsocketsRpcServer(network string, addr string) {
 	s := server.NewServer()
 	addRegistryPlugin(s, network, addr)
 	//config.Conf.Connect.ConnectTcp.ServerId
