@@ -1,5 +1,5 @@
-let socketUrl = "ws://127.0.0.1:7000/ws";
-let apiUrl = "http://127.0.0.1:7070";
+let socketUrl = "ws://192.168.44.244:7000/ws";
+let apiUrl = "http://192.168.44.244:7070";
 
 function getLocalStorage(name) {
     let value = localStorage.getItem(name);

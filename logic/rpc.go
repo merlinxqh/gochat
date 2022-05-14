@@ -209,6 +209,7 @@ push msg to room
 func (rpc *RpcLogic) PushRoom(ctx context.Context, args *proto.Send, reply *proto.SuccessReply) (err error) {
 	reply.Code = config.FailReplyCode
 	sendData := args
+	logrus.Infof("============= receive msg: %s, from user: %s =============", sendData.Msg, sendData.FromUserName)
 	roomId := sendData.RoomId
 	logic := new(Logic)
 	roomUserInfo := make(map[string]string)

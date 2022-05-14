@@ -20,6 +20,7 @@ import (
 	"time"
 )
 
+// RpcConnectClientList connect-tcp & connect-websocket 服务注册到etcd的数据 map(serverId, client)
 var RpcConnectClientList map[string]client.XClient
 
 func (task *Task) InitConnectRpcClient() (err error) {

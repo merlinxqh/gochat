@@ -73,6 +73,7 @@ func (logic *Logic) createRpcServer(network string, addr string) {
 	s.Serve(network, addr)
 }
 
+//添加 注册插件
 func (logic *Logic) addRegistryPlugin(s *server.Server, network string, addr string) {
 	r := &serverplugin.EtcdV3RegisterPlugin{
 		ServiceAddress: network + "@" + addr,
