@@ -25,6 +25,7 @@ func (c *Connect) InitWebsocket(starter proto.Starter) error {
 	return err
 }
 
+//websocket-server
 func (c *Connect) serveWs(server *Server, w http.ResponseWriter, r *http.Request) {
 
 	var upGrader = websocket.Upgrader{

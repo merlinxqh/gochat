@@ -27,8 +27,11 @@ address = "tcp@0.0.0.0:6912,tcp@0.0.0.0:6913"
 address = "tcp@0.0.0.0:6914,tcp@0.0.0.0:6915"
 
 [connect-bucket]
+#cpu数量
 cpuNum = 4
+#用户连接数
 channel = 1024
+#房间个数
 room = 1024
 svrProto = 80
 routineAmount = 32
